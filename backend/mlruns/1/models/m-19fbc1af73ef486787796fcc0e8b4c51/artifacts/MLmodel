@@ -1,0 +1,23 @@
+artifact_path: file:E:/FairLens/backend/mlruns/1/models/m-19fbc1af73ef486787796fcc0e8b4c51/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.14.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.11.1
+model_id: m-19fbc1af73ef486787796fcc0e8b4c51
+model_size_bytes: 580092
+model_uuid: m-19fbc1af73ef486787796fcc0e8b4c51
+prompts: null
+run_id: dfa5cd9963bc4d989f1257e08466b479
+utc_time_created: '2026-04-16 10:45:36.917807'

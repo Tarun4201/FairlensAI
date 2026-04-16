@@ -1,0 +1,26 @@
+[
+  {
+    "feature": "capital-gain",
+    "importance": 0.36752307415008545
+  },
+  {
+    "feature": "age",
+    "importance": 0.2628660500049591
+  },
+  {
+    "feature": "education-num",
+    "importance": 0.2515215277671814
+  },
+  {
+    "feature": "hours-per-week",
+    "importance": 0.13506217300891876
+  },
+  {
+    "feature": "capital-loss",
+    "importance": 0.11001377552747726
+  },
+  {
+    "feature": "fnlwgt",
+    "importance": 0.0686417743563652
+  }
+]

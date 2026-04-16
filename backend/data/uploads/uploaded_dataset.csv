@@ -1,0 +1,11 @@
+id,age,gender,employment_type,income,has_debt,risk_flag
+1,25,M,Full-time,50000,0,0
+2,30,F,Part-time,30000,1,1
+3,35,M,Full-time,60000,1,1
+4,40,F,Unemployed,0,0,0
+5,22,M,Full-time,55000,1,1
+6,28,F,Part-time,25000,0,1
+7,45,M,Full-time,70000,1,1
+8,50,F,Unemployed,0,0,0
+9,33,M,Full-time,45000,0,0
+10,27,F,Part-time,28000,1,1
