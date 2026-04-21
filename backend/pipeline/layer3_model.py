@@ -131,8 +131,8 @@ def _train_xgboost(X_train, y_train, X_test, y_test) -> Tuple:
         metrics = _evaluate_model(xgb, X_test, y_test, "XGBoost")
         return xgb, metrics
 
-    except ImportError:
-        logger.warning("⚠️ XGBoost not available, using Random Forest as fallback...")
+    except Exception as e:
+        logger.warning(f"⚠️ XGBoost not available ({str(e)}), using Random Forest as fallback...")
         from sklearn.ensemble import RandomForestClassifier
 
         rf = RandomForestClassifier(

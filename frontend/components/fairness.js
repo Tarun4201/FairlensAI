@@ -42,28 +42,28 @@ export async function renderFairness(container, api) {
                 </div>
             </div>
 
-            <!-- DPD / EOD Charts -->
+            <!-- Simplified Fairness Overview -->
             <div class="grid-2" style="margin-bottom: 24px;">
                 <div class="card animate-in stagger-2">
                     <div class="card-header">
                         <div>
-                            <div class="card-title">Demographic Parity Difference (DPD)</div>
-                            <div class="card-subtitle">Difference in positive prediction rates across groups</div>
+                            <div class="card-title">Prediction Fairness</div>
+                            <div class="card-subtitle">Are all groups treated equally by the AI?</div>
                         </div>
                     </div>
                     <div id="dpd-chart" class="chart-container" style="min-height: 200px;">
-                        <div class="empty-state" style="padding: 20px;"><p>Run pipeline to see DPD metrics</p></div>
+                        <div class="empty-state" style="padding: 20px;"><p>Run pipeline to check fairness</p></div>
                     </div>
                 </div>
                 <div class="card animate-in stagger-3">
                     <div class="card-header">
                         <div>
-                            <div class="card-title">Equal Opportunity Difference (EOD)</div>
-                            <div class="card-subtitle">Difference in true positive rates across groups</div>
+                            <div class="card-title">Identification Fairness</div>
+                            <div class="card-subtitle">Are all at-risk students found at the same rate?</div>
                         </div>
                     </div>
                     <div id="eod-chart" class="chart-container" style="min-height: 200px;">
-                        <div class="empty-state" style="padding: 20px;"><p>Run pipeline to see EOD metrics</p></div>
+                        <div class="empty-state" style="padding: 20px;"><p>Run pipeline to check fairness</p></div>
                     </div>
                 </div>
             </div>
@@ -113,86 +113,40 @@ async function loadFairnessData(api) {
 }
 
 function renderDPDChart(auditResults, threshold) {
-    const container = document.getElementById('dpd-chart');
-    if (!container) return;
-
-    const entries = Object.entries(auditResults);
-    const barH = 32;
-    const gap = 12;
-    const labelW = 160;
-    const chartW = 400;
-    const maxVal = Math.max(...entries.map(([_, r]) => r.dpd.dpd), threshold * 2, 0.15);
-    const svgH = entries.length * (barH + gap) + 30;
-
-    let svg = `<svg viewBox="0 0 ${chartW + labelW + 80} ${svgH}" width="100%" preserveAspectRatio="xMinYMin meet">`;
-
-    entries.forEach(([attr, result], i) => {
-        const y = i * (barH + gap) + 10;
-        const dpd = result.dpd.dpd;
-        const barW = (dpd / maxVal) * chartW;
-        const color = dpd >= threshold ? '#f43f5e' : '#10b981';
-
-        // Label
-        const label = attr.length > 20 ? attr.substring(0, 20) + '…' : attr;
-        svg += `<text x="${labelW - 10}" y="${y + barH/2 + 4}" text-anchor="end" fill="var(--text-secondary)" font-size="11" font-family="Inter, sans-serif">${label}</text>`;
-
-        // Bar
-        svg += `<rect x="${labelW}" y="${y}" width="${Math.max(barW, 2)}" height="${barH}" rx="4" fill="${color}" opacity="0.8"/>`;
-
-        // Value
-        svg += `<text x="${labelW + barW + 8}" y="${y + barH/2 + 4}" fill="var(--text-primary)" font-size="12" font-weight="600" font-family="Inter, sans-serif">${dpd.toFixed(4)}</text>`;
-
-        // Flag
-        if (dpd >= threshold) {
-            svg += `<text x="${labelW + barW + 68}" y="${y + barH/2 + 4}" fill="#f43f5e" font-size="11" font-weight="600" font-family="Inter, sans-serif">🚨 FLAGGED</text>`;
-        }
-    });
-
-    // Threshold line
-    const threshX = labelW + (threshold / maxVal) * chartW;
-    svg += `<line x1="${threshX}" y1="0" x2="${threshX}" y2="${svgH}" class="threshold-line"/>`;
-    svg += `<text x="${threshX}" y="${svgH - 2}" text-anchor="middle" fill="#f43f5e" font-size="9" font-family="Inter, sans-serif">THRESHOLD (${threshold})</text>`;
-
-    svg += '</svg>';
-    container.innerHTML = svg;
+    renderSimpleChart('dpd-chart', auditResults, 'dpd', threshold);
 }
 
 function renderEODChart(auditResults, threshold) {
-    const container = document.getElementById('eod-chart');
+    renderSimpleChart('eod-chart', auditResults, 'eod', threshold);
+}
+
+function renderSimpleChart(containerId, auditResults, type, threshold) {
+    const container = document.getElementById(containerId);
     if (!container) return;
-
-    const entries = Object.entries(auditResults);
-    const barH = 32;
-    const gap = 12;
-    const labelW = 160;
-    const chartW = 400;
-    const maxVal = Math.max(...entries.map(([_, r]) => r.eod.eod), threshold * 2, 0.15);
-    const svgH = entries.length * (barH + gap) + 30;
-
-    let svg = `<svg viewBox="0 0 ${chartW + labelW + 80} ${svgH}" width="100%" preserveAspectRatio="xMinYMin meet">`;
-
-    entries.forEach(([attr, result], i) => {
-        const y = i * (barH + gap) + 10;
-        const eod = result.eod.eod;
-        const barW = (eod / maxVal) * chartW;
-        const color = eod >= threshold ? '#f43f5e' : '#10b981';
-
-        const label = attr.length > 20 ? attr.substring(0, 20) + '…' : attr;
-        svg += `<text x="${labelW - 10}" y="${y + barH/2 + 4}" text-anchor="end" fill="var(--text-secondary)" font-size="11" font-family="Inter, sans-serif">${label}</text>`;
-        svg += `<rect x="${labelW}" y="${y}" width="${Math.max(barW, 2)}" height="${barH}" rx="4" fill="${color}" opacity="0.8"/>`;
-        svg += `<text x="${labelW + barW + 8}" y="${y + barH/2 + 4}" fill="var(--text-primary)" font-size="12" font-weight="600" font-family="Inter, sans-serif">${eod.toFixed(4)}</text>`;
-
-        if (eod >= threshold) {
-            svg += `<text x="${labelW + barW + 68}" y="${y + barH/2 + 4}" fill="#f43f5e" font-size="11" font-weight="600" font-family="Inter, sans-serif">🚨 FLAGGED</text>`;
-        }
+    
+    let html = '<div style="display: flex; flex-direction: column; gap: 12px;">';
+    Object.entries(auditResults).forEach(([attr, result]) => {
+        const val = result[type][type];
+        const isFlagged = val >= threshold;
+        const color = isFlagged ? 'var(--accent-coral)' : 'var(--accent-emerald)';
+        const icon = isFlagged ? '🚨' : '✅';
+        const msg = isFlagged ? 'Bias Warning' : 'Fair and Equal';
+        
+        html += `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #f8fafc; border-radius: var(--radius-sm); border-left: 4px solid ${color}; transition: transform 0.2s ease;">
+                <div style="display: flex; flex-direction: column;">
+                    <strong style="font-size:1.1rem;">${attr}</strong>
+                    <span style="font-size:0.85rem; color:var(--text-secondary);">Disparity: <span style="font-weight:600;">${(val * 100).toFixed(1)}%</span></span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="color: ${color}; font-weight:700; font-family:var(--font-display);">${msg}</span>
+                    <span style="font-size:1.4rem;">${icon}</span>
+                </div>
+            </div>
+        `;
     });
-
-    const threshX = labelW + (threshold / maxVal) * chartW;
-    svg += `<line x1="${threshX}" y1="0" x2="${threshX}" y2="${svgH}" class="threshold-line"/>`;
-    svg += `<text x="${threshX}" y="${svgH - 2}" text-anchor="middle" fill="#f43f5e" font-size="9" font-family="Inter, sans-serif">THRESHOLD (${threshold})</text>`;
-
-    svg += '</svg>';
-    container.innerHTML = svg;
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 function renderAuditTable(auditResults, threshold) {
@@ -207,10 +161,10 @@ function renderAuditTable(auditResults, threshold) {
                         <th>Attribute</th>
                         <th>Type</th>
                         <th>Groups</th>
-                        <th>DPD</th>
-                        <th>EOD</th>
-                        <th>DPD Status</th>
-                        <th>EOD Status</th>
+                        <th>Prediction Disparity</th>
+                        <th>Identification Disparity</th>
+                        <th>Prediction Health</th>
+                        <th>Identification Health</th>
                     </tr>
                 </thead>
                 <tbody>

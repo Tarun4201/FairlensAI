@@ -40,6 +40,7 @@ const api = {
 };
 
 // ── Component Imports ───────────────────────────────────────────
+import { renderHome } from './components/home.js';
 import { renderDashboard } from './components/dashboard.js';
 import { renderPipeline } from './components/pipeline.js';
 import { renderSchema } from './components/schema.js';
@@ -48,18 +49,19 @@ import { renderExplainability } from './components/explainability.js';
 import { renderWhatIf } from './components/whatif.js';
 
 // ── State ───────────────────────────────────────────────────────
-let currentTab = 'dashboard';
+let currentTab = 'home';
 let pollingInterval = null;
 let pipelineStatus = 'idle';
 
 // ── Tab Configuration ───────────────────────────────────────────
 const TABS = {
+    home: { title: 'Home', render: renderHome },
     dashboard: { title: 'Dashboard', render: renderDashboard },
     pipeline: { title: 'Pipeline', render: renderPipeline },
-    schema: { title: 'Schema Analyzer', render: renderSchema },
-    fairness: { title: 'Fairness Audit', render: renderFairness },
-    explainability: { title: 'Explainability', render: renderExplainability },
-    whatif: { title: 'What-If Simulator', render: renderWhatIf }
+    schema: { title: 'Data Quality', render: renderSchema },
+    fairness: { title: 'Fairness Check', render: renderFairness },
+    explainability: { title: 'AI Decision Factors', render: renderExplainability },
+    whatif: { title: 'Simulator', render: renderWhatIf }
 };
 
 // ── Router ──────────────────────────────────────────────────────
@@ -184,7 +186,7 @@ function init() {
     }
 
     // Route from hash
-    const hash = window.location.hash.replace('#', '') || 'dashboard';
+    const hash = window.location.hash.replace('#', '') || 'home';
     navigateTo(hash);
 
     // Check initial pipeline status
@@ -192,7 +194,7 @@ function init() {
 
     // Hash change
     window.addEventListener('hashchange', () => {
-        const tab = window.location.hash.replace('#', '') || 'dashboard';
+        const tab = window.location.hash.replace('#', '') || 'home';
         if (tab !== currentTab) navigateTo(tab);
     });
 }

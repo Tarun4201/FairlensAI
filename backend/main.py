@@ -451,23 +451,29 @@ async def what_if_simulation(request: WhatIfRequest):
     else:
         tier = "Low"
 
-    # SHAP explanation for this input
+    # SHAP explanation for this input — supports both XGBoost and RandomForest
     shap_details = None
     try:
-        # Load the base model for SHAP
         best_model_path = os.path.join(MODELS_DIR, "best_model.pkl")
         if os.path.exists(best_model_path):
             import shap
-
             with open(best_model_path, "rb") as f:
                 base_model = pickle.load(f)
+
+            # TreeExplainer works for both sklearn RandomForest and XGBoost
             explainer = shap.TreeExplainer(base_model)
             shap_values = explainer.shap_values(input_df)
-            if isinstance(shap_values, list):
-                shap_values = shap_values[1] if len(shap_values) > 1 else shap_values[0]
 
-            entity_shap = shap_values[0]
-            top_indices = np.argsort(np.abs(entity_shap))[-3:][::-1]
+            # Handle multi-output: pick positive class
+            if isinstance(shap_values, list):
+                entity_shap = shap_values[1][0] if len(shap_values) > 1 else shap_values[0][0]
+            elif hasattr(shap_values, 'ndim') and shap_values.ndim == 3:
+                # shap returns (n_samples, n_features, n_classes) for some models
+                entity_shap = shap_values[0, :, 1]
+            else:
+                entity_shap = shap_values[0]
+
+            top_indices = np.argsort(np.abs(entity_shap))[-5:][::-1]
 
             shap_details = []
             for idx in top_indices:

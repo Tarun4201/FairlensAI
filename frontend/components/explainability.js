@@ -12,7 +12,7 @@ export async function renderExplainability(container, api) {
                         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                     </svg>
-                    SHAP Explainability
+                    AI Decision Factors
                 </div>
             </div>
 
@@ -20,8 +20,8 @@ export async function renderExplainability(container, api) {
             <div class="card animate-in stagger-1" style="margin-bottom: 24px;">
                 <div class="card-header">
                     <div>
-                        <div class="card-title">Global Feature Importance</div>
-                        <div class="card-subtitle">Mean absolute SHAP values across all predictions</div>
+                        <div class="card-title">Most Important Factors Overall</div>
+                        <div class="card-subtitle">What drives the AI predictions across the entire dataset?</div>
                     </div>
                 </div>
                 <div id="global-importance" class="chart-container" style="min-height: 300px;">
@@ -47,7 +47,7 @@ export async function renderExplainability(container, api) {
                 </div>
                 <div id="entity-detail">
                     <div class="empty-state" style="padding: 20px;">
-                        <p>Enter an entity ID to view their SHAP explanation</p>
+                        <p>Enter an entity ID to view why decisions were made</p>
                     </div>
                 </div>
             </div>
@@ -56,13 +56,13 @@ export async function renderExplainability(container, api) {
             <div class="card animate-in stagger-3">
                 <div class="card-header">
                     <div>
-                        <div class="card-title">Entity Explanations</div>
-                        <div class="card-subtitle">Top 3 SHAP factors per prediction</div>
+                        <div class="card-title">Individual Explanations</div>
+                        <div class="card-subtitle">Top 3 driving factors per person</div>
                     </div>
                 </div>
                 <div id="entity-list">
                     <div class="empty-state" style="padding: 20px;">
-                        <p>Run pipeline to generate SHAP explanations</p>
+                        <p>Run pipeline to generate explanations</p>
                     </div>
                 </div>
             </div>
@@ -156,8 +156,7 @@ function renderEntityList(entities, pagination) {
                     <span style="color: ${color}; font-weight: 600; font-size: 0.78rem;">
                         ${arrow} ${f.feature}
                     </span>
-                    <br/>
-                    <span style="font-size: 0.7rem; color: var(--text-tertiary);">SHAP: ${f.shap_value.toFixed(4)}</span>
+                    <span style="font-size: 0.7rem; color: var(--text-tertiary);">Impact: ${(f.shap_value * 100).toFixed(1)}%</span>
                 </td>`;
             } else {
                 html += '<td>—</td>';

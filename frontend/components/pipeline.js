@@ -4,15 +4,15 @@
  */
 
 const LAYERS = [
-    { id: 0, name: 'AI Schema Analyzer', desc: 'Auto-detect target, sensitive attributes, and feature groups', tag: 'LLM + Rule-based', key: 'schema_analyzer' },
-    { id: 1, name: 'Bronze — Raw Ingestion', desc: 'Ingest raw dataset, enforce schema integrity', tag: 'Delta Lake', key: 'bronze' },
-    { id: 2, name: 'Silver — Feature Engineering', desc: 'Null handling, categorical encoding, trend features', tag: 'PySpark', key: 'silver' },
-    { id: 3, name: 'Model Training', desc: 'XGBoost + Logistic Regression, MLflow tracking', tag: 'MLflow', key: 'model_training' },
-    { id: 4, name: 'Calibration', desc: 'Platt Scaling for meaningful probabilities', tag: 'CalibratedCV', key: 'calibration' },
-    { id: 5, name: 'Fairness Audit', desc: 'DPD + EOD across sensitive attributes', tag: 'CORE', key: 'fairness_audit' },
-    { id: 6, name: 'SHAP Explainability', desc: 'TreeExplainer, top-3 features per prediction', tag: 'SHAP', key: 'shap' },
-    { id: 7, name: 'Text Generation', desc: 'SHAP → plain-language explanations', tag: 'NLG', key: 'text_generation' },
-    { id: 8, name: 'Gold Output', desc: 'Final enriched table with all signals', tag: 'Output', key: 'gold_output' }
+    { id: 0, name: '🔍 Smart Data Reader', desc: 'Automatically identifies what your data contains and which fields affect fairness', tag: 'Auto-Setup', key: 'schema_analyzer' },
+    { id: 1, name: '📥 Load Your Data', desc: 'Safely reads your dataset and checks everything is in the right format', tag: 'Import', key: 'bronze' },
+    { id: 2, name: '🧹 Clean & Prepare', desc: 'Handles missing values, converts text to numbers, and builds useful new features', tag: 'Preparation', key: 'silver' },
+    { id: 3, name: '🤖 Train the AI Model', desc: 'Teaches the AI to recognize patterns that predict the outcome', tag: 'AI Training', key: 'model_training' },
+    { id: 4, name: '🎯 Fine-Tune Accuracy', desc: 'Calibrates the AI so the percentages it gives actually mean what they say', tag: 'Calibration', key: 'calibration' },
+    { id: 5, name: '⚖️ Fairness Check', desc: 'Checks if the AI treats all groups equally — this is the most important step', tag: '⭐ CRITICAL', key: 'fairness_audit' },
+    { id: 6, name: '💡 Understand Decisions', desc: 'Analyzes which factors most influenced each individual prediction', tag: 'Explainability', key: 'shap' },
+    { id: 7, name: '📝 Write Plain Summaries', desc: 'Converts technical results into easy-to-read English descriptions', tag: 'Summaries', key: 'text_generation' },
+    { id: 8, name: '📊 Generate Final Report', desc: 'Creates the complete output table with all predictions, explanations, and fairness flags', tag: 'Final Output', key: 'gold_output' }
 ];
 
 let pipelinePolling = null;
@@ -51,12 +51,12 @@ export async function renderPipeline(container, api) {
                         <div class="demo-dataset-card selected" data-key="student_dropout" onclick="selectDemoDataset('student_dropout', this)">
                             <div class="demo-dataset-icon">🎓</div>
                             <div class="demo-dataset-name">Student Dropout</div>
-                            <div class="demo-dataset-desc">UCI · 4,424 records · 36 features</div>
+                            <div class="demo-dataset-desc">4,424 student records · 36 factors<br><span style="color:var(--accent-blue); font-size:0.7rem;">Great for getting started</span></div>
                         </div>
                         <div class="demo-dataset-card" data-key="adult_income" onclick="selectDemoDataset('adult_income', this)">
                             <div class="demo-dataset-icon">💰</div>
                             <div class="demo-dataset-name">Adult Income</div>
-                            <div class="demo-dataset-desc">UCI · 48,842 records · 14 features</div>
+                            <div class="demo-dataset-desc">48,842 income records · 14 factors<br><span style="color:var(--text-tertiary); font-size:0.7rem;">Larger analysis (~3 mins)</span></div>
                         </div>
                     </div>
                 </div>
